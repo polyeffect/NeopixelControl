@@ -8,7 +8,7 @@ float inByte = 0;
 
 void setup() 
 {
-  size(400, 400); //make our canvas 200 x 200 pixels big
+  size(600, 400); //make our canvas 200 x 200 pixels big
   String portName = Serial.list()[4]; //change the 0 to a 1 or 2 etc. to match your port
   println(portName);
   myPort = new Serial(this, portName, 57600);
@@ -16,13 +16,18 @@ void setup()
 
   cp5 = new ControlP5(this);
 
-  // Brightness
+  // Brightness Slider
   cp5.addSlider("Brightness", 0, 255, 255, 260, 120, 14, 100);
   cp5.addTextfield("Brightness Text", 220, 270, 100, 20);
 
-  // Color Temperature
-  cp5.addSlider("Temperature", 10, 400, 100, 110, 120, 14, 100);
+  // Color Temperature Slider
+  cp5.addSlider("Temperature", 0, 200, 100, 110, 120, 14, 100);
   cp5.addTextfield("Temperature Text", 70, 270, 100, 20);
+  
+  // Mode Buttons
+  cp5.addButton("DayLight").setPosition(370,160).setSize(150,19);
+  cp5.addButton("NightLight").setPosition(370,180).setSize(150,19);
+  cp5.addButton("PartyLight").setPosition(370,200).setSize(150, 19);
 }
 
 void draw() {
@@ -47,6 +52,18 @@ public void Brightness(int theValue) {
   myPort.write("b" + d + "k");
 }
 
+public void DayLight() {
+  myPort.write("m" + "200,168,0" + "k");
+}
+
+public void NightLight() {
+  myPort.write("m" + "0,0,255" + "k");
+}
+
+public void PartyLight() {
+  myPort.write("pk");
+}
+
 int[] colorTemperatureToRGB(int kelvin) {
   int temp = kelvin;
 
@@ -57,7 +74,7 @@ int[] colorTemperatureToRGB(int kelvin) {
     green = temp + 10;
     green = (int)(99.4708025861 * Math.log(green) - 161.1195681661);
 
-    if (temp <= 19) {
+    if (temp <= 10) {
       blue = 10;
     } else {
       blue = temp;
